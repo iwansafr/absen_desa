@@ -42,7 +42,7 @@ function start() {
         .then(function (stream) {
           video.srcObject = stream;
         })
-        .catch(function (err0r) {
+        .catch(function (error) {
             alert('camera not found');
           console.log("Camera not detected!");
         });
@@ -58,10 +58,10 @@ async function recognizeFaces() {
     const faceMatcher = new faceapi.FaceMatcher(labeledDescriptors, 0.4)
     // console.log(faceMatcher)
 
-    // video.play()
+    video.play()
     console.log('Playing')
     status.innerHTML = 'Kamera Ready'
-
+    console.log(video)
     const canvas = faceapi.createCanvasFromMedia(video)
     document.body.append(canvas)
 
@@ -78,7 +78,7 @@ async function recognizeFaces() {
         const results = resizedDetections.map((d) => {
             return faceMatcher.findBestMatch(d.descriptor)
         })
-        results.forEach((result, i) => {
+        results.every((result, i) => {
             const box = resizedDetections[i].detection.box
             let person = result.toString()
             if (person.match('unknown')) {
@@ -88,7 +88,8 @@ async function recognizeFaces() {
                 const regex = new RegExp(/(\d+)(?=\s*-)/);
                 const anggota_id = regex.exec(get_text)
                 console.log('redirect '+i)
-                window.location.href = _URL+'admin/absensi/save/'+anggota_id[0];
+                // window.location.href = _URL+'admin/absensi/save/'+anggota_id[0];
+                return false;
                 // setInterval(async () => {
                 // }, 500)
             }

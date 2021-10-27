@@ -13,6 +13,8 @@ class Absensi extends CI_Controller
   }
   public function index()
   {
+    $jam = $this->esg->get_config('jam_kerja');
+    pr($jam);die();
     $this->load->view('admin/absensi/index');
   }
   public function get_karyawan()
