@@ -68,4 +68,9 @@ class Absensi extends CI_Controller
   {
     $this->load->view('admin/absensi/cam');
   }
+  public function jam_kerja()
+  {
+    $this->esg_model->init();
+    $this->load->view('index');
+  }
 }
