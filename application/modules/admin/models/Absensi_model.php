@@ -4,7 +4,7 @@ class Absensi_model extends CI_Model{
 
   public function status()
   {
-    return ['Libur','Berangkat Pagi','Terlambat', 'pulang cepat', 'Pulang','izin', 'absen'	];
+    return ['Off','Berangkat Pagi','Terlambat', 'pulang cepat', 'Pulang','izin', 'absen'	];
   }
   public function rekap($k_id = 0, $year = '', $month = '')
 	{

@@ -70,6 +70,8 @@ class Absensi extends CI_Controller
         $status = 2;
       }else if($cur_time >= $jam['jam_pulang_awal'] && $cur_time <= $jam['jam_pulang_akhir']){
         $status = 4;
+      } else {
+        $status = 0;
       }
       $karyawan_visit = $this->db->query('SELECT * FROM absensi WHERE karyawan_id = ? AND date(visit_time) = CURDATE() AND status = ?', [$id, $status])->row_array();
       $allowed = false;
