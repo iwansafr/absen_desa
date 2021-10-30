@@ -8,17 +8,37 @@ class Absensi extends CI_Controller
     $this->db->cache_off();
     $this->load->model('esg_model');
     $this->load->model('admin_model');
+    $this->load->model('absensi_model');
     $this->load->library('esg');
     $this->load->library('ZEA/zea');
   }
   public function index()
   {
     $jam = $this->esg->get_config('jam_kerja');
-    
+
     $cur_time = date('H:i');
-    pr($cur_time,$jam);
-    pr($jam['jam_berangkat_akhir']<$cur_time);
-    die();
+    // pr($cur_time,$jam);
+    // pr($jam['jam_berangkat_akhir']<$cur_time);
+    // pr($this->absensi_model->status());
+
+    // [0] => Libur
+    // [1] => berangkat
+    // [2] => telat
+    // [3] => pulang cepat
+    // [4] => pulang
+    // [5] => izin
+    // [6] => absen
+
+    if($cur_time >= $jam['jam_berangkat_awal'] && $cur_time <= $jam['jam_berangkat_akhir']){
+      $status = 1;
+    }else if($cur_time > $jam['jam_berangkat_akhir'] && $cur_time < $jam['jam_pulang_awal']){
+      $status = 2;
+    }else if($cur_time >= $jam['jam_pulang_awal'] && $cur_time <= $jam['jam_pulang_akhir']){
+      $status = 4;
+    }
+    // pr($status);
+    // die();
+    $data['status'] = $status;
     $this->load->view('admin/absensi/index');
   }
   public function get_karyawan()
