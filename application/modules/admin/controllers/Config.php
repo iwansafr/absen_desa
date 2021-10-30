@@ -192,4 +192,8 @@ class Config extends CI_Controller
 		pr('ok done');
 		// $this->load->view('index');
 	}
+	public function instansi()
+	{
+		$this->load->view('index');
+	}
 }

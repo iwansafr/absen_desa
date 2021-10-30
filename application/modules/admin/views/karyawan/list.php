@@ -8,7 +8,7 @@ $form->search();
 $form->addInput('id', 'plaintext');
 $form->setLabel('id','Action');
 $form->setPlaintext('id',[
-	base_url('admin/karyawan/rekap/{id}/rekap') => 'rekap'
+	base_url('admin/absensi/report/{id}/rekap') => 'rekap'
 ]);
 $form->addInput('nama', 'plaintext');
 $form->addInput('jabatan_id', 'dropdown');

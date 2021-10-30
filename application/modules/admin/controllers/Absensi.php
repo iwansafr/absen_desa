@@ -90,12 +90,38 @@ class Absensi extends CI_Controller
     }
   }
 
-  public function report()
+  public function report($k_id = 0)
   {
-    $this->esg_model->init();
-    $month = @intval($_GET['month']);
-    $data = $this->db->query('SELECT * FROM karyawan WHERE MONTH(visit_time) = ?',$month)->result_array();
-    $this->load->view('index', ['data'=>$data]);
+    if(!empty($k_id))
+		{
+      $this->esg_model->init();
+			$year  = !empty($_GET['year']) ? $_GET['year'] : date('Y');
+			$month = !empty($_GET['month']) ? $_GET['month'] : date('m');
+
+			if(!empty($_GET['my']))
+			{
+				$get_month = !empty($_GET['my']) ? $_GET['my'] : date('m');
+				$get_month = explode('-',$get_month);
+				if(!empty($get_month[0]))
+				{
+					$year = $get_month[0];
+				}
+				if(!empty($get_month[1]))
+				{
+					$month = $get_month[1];
+				}
+			}
+
+			// pr($data);die();
+			$karyawan = $this->db->query('SELECT * FROM karyawan WHERE id = ?', $k_id)->row_array();
+			$data = $this->absensi_model->rekap($k_id,$year,$month);
+      $instansi = $this->esg->get_config('instansi');
+			if(empty($_GET['excel'])){
+				$this->load->view('index',['data'=>$data,'karyawan'=>$karyawan,'month'=>$month,'year'=>$year,'instansi'=>$instansi]);
+			}else{
+				$this->load->view('admin/absensi/rekap',['data'=>$data,'karyawan'=>$karyawan,'month'=>$month,'year'=>$year,'instansi'=>$instansi]);
+			}
+		}
   }
   public function cam()
   {
