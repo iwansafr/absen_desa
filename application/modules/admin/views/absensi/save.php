@@ -45,6 +45,9 @@
 			<tr>
 				<td colspan="2">Berhasil Masuk <i class="fa fa-check"></i></td>
 			</tr>
+			<tr>
+				<td colspan="2"><?php echo $pesan ?> <i class="fa fa-check"></i></td>
+				</tr>
 		</table>
 		<?php $text = 'selamat datang '.$data['nama']; ?>
 	<?php else: ?>

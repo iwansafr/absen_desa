@@ -53,6 +53,7 @@ class Absensi extends CI_Controller
     {
       $jam = $this->esg->get_config('jam_kerja');
       $cur_time = date('H:i');
+      $pesan = '';
       // [0] => Libur
       // [1] => berangkat
       // [2] => telat
@@ -68,28 +69,17 @@ class Absensi extends CI_Controller
       }else if($cur_time >= $jam['jam_pulang_awal'] && $cur_time <= $jam['jam_pulang_akhir']){
         $status = 4;
       }
-      $karyawan_visit = $this->db->query('SELECT * FROM absensi WHERE karyawan_id = ? AND date(visit_time) = CURDATE()', $id)->row_array();
+      $karyawan_visit = $this->db->query('SELECT * FROM absensi WHERE karyawan_id = ? AND date(visit_time) = CURDATE() AND status = ?', [$id, $status])->row_array();
       $allowed = false;
       if(empty($karyawan_visit)){
         $this->db->insert('absensi',['karyawan_id'=>$id, 'status'=>$status,'visit_time'=>date('Y-m-d- H:i:s')]);
         $allowed = true;
+        $pesan = 'Terima Kasih';
       }else{
-        $hour = date('H');
-        if($hour > 6 && $hour < 10){
-          $morning_visit = $this->db->query('SELECT * FROM absensi WHERE karyawan_id = ? AND date(visit_time) = CURDATE() AND hour(visit_time) < 10 AND hour(visit_time) > 6', $id)->row_array();
-          if(empty($morning_visit)){
-            $this->db->insert('absensi',['karyawan_id'=>$id, 'status'=>$status,'visit_time'=>date('Y-m-d- H:i:s')]);
-            $allowed = true;
-          }
-        }else if($hour >= 10 && $hour <= 14){
-          $noon_visit = $this->db->query('SELECT * FROM absensi WHERE karyawan_id = ? AND date(visit_time) = CURDATE() AND hour(visit_time) >= 10 AND hour(visit_time) <= 14', $id)->row_array();
-          if(empty($noon_visit)){
-            $this->db->insert('absensi',['karyawan_id'=>$id, 'status'=>$status,'visit_time'=>date('Y-m-d- H:i:s')]);
-            $allowed = true;
-          }
-        }
+        $allowed = true;
+        $pesan = 'Sudah Melakukan Absen '.$this->absensi_model->status()[$status];
       }
-      $this->load->view('admin/absensi/save', ['data' => $karyawan]);
+      $this->load->view('admin/absensi/save', ['data' => $karyawan, 'pesan'=>$pesan]);
     }else{
       ?>
       <script>
