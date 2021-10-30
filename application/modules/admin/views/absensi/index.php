@@ -38,7 +38,7 @@
   <div id="txt"></div>
   <div id="status"></div>
   <div class="status">
-    Status : <?php echo $this->absensi_model->status()[$status]; ?>
+    Status : <?php echo $this->absensi_model->status()[@intval($status)]; ?>
   </div>
 
 </body>
