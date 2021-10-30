@@ -4,6 +4,6 @@ class Absensi_model extends CI_Model{
 
   public function status()
   {
-    return ['Libur','berangkat','telat', 'pulang cepat', 'pulang','izin', 'absen'	];
+    return ['Libur','Berangkat Pagi','Terlambat', 'pulang cepat', 'Pulang','izin', 'absen'	];
   }
 }

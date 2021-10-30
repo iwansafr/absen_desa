@@ -39,7 +39,7 @@ class Absensi extends CI_Controller
     // pr($status);
     // die();
     $data['status'] = $status;
-    $this->load->view('admin/absensi/index');
+    $this->load->view('admin/absensi/index', $data);
   }
   public function get_karyawan()
   {
@@ -51,23 +51,40 @@ class Absensi extends CI_Controller
     $karyawan = $this->db->query('SELECT karyawan.*,jabatan.title AS jabatan FROM karyawan INNER JOIN jabatan ON(jabatan.id=karyawan.jabatan_id) WHERE karyawan.id = ?', $id)->row_array();
     if(!empty($karyawan))
     {
+      $jam = $this->esg->get_config('jam_kerja');
+      $cur_time = date('H:i');
+      // [0] => Libur
+      // [1] => berangkat
+      // [2] => telat
+      // [3] => pulang cepat
+      // [4] => pulang
+      // [5] => izin
+      // [6] => absen
+
+      if($cur_time >= $jam['jam_berangkat_awal'] && $cur_time <= $jam['jam_berangkat_akhir']){
+        $status = 1;
+      }else if($cur_time > $jam['jam_berangkat_akhir'] && $cur_time < $jam['jam_pulang_awal']){
+        $status = 2;
+      }else if($cur_time >= $jam['jam_pulang_awal'] && $cur_time <= $jam['jam_pulang_akhir']){
+        $status = 4;
+      }
       $karyawan_visit = $this->db->query('SELECT * FROM absensi WHERE karyawan_id = ? AND date(visit_time) = CURDATE()', $id)->row_array();
       $allowed = false;
       if(empty($karyawan_visit)){
-        $this->db->insert('absensi',['karyawan_id'=>$id,'visit_time'=>date('Y-m-d- H:i:s')]);
+        $this->db->insert('absensi',['karyawan_id'=>$id, 'status'=>$status,'visit_time'=>date('Y-m-d- H:i:s')]);
         $allowed = true;
       }else{
         $hour = date('H');
         if($hour > 6 && $hour < 10){
           $morning_visit = $this->db->query('SELECT * FROM absensi WHERE karyawan_id = ? AND date(visit_time) = CURDATE() AND hour(visit_time) < 10 AND hour(visit_time) > 6', $id)->row_array();
           if(empty($morning_visit)){
-            $this->db->insert('absensi',['karyawan_id'=>$id,'visit_time'=>date('Y-m-d- H:i:s')]);
+            $this->db->insert('absensi',['karyawan_id'=>$id, 'status'=>$status,'visit_time'=>date('Y-m-d- H:i:s')]);
             $allowed = true;
           }
         }else if($hour >= 10 && $hour <= 14){
           $noon_visit = $this->db->query('SELECT * FROM absensi WHERE karyawan_id = ? AND date(visit_time) = CURDATE() AND hour(visit_time) >= 10 AND hour(visit_time) <= 14', $id)->row_array();
           if(empty($noon_visit)){
-            $this->db->insert('absensi',['karyawan_id'=>$id,'visit_time'=>date('Y-m-d- H:i:s')]);
+            $this->db->insert('absensi',['karyawan_id'=>$id, 'status'=>$status,'visit_time'=>date('Y-m-d- H:i:s')]);
             $allowed = true;
           }
         }

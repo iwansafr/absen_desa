@@ -37,6 +37,9 @@
   <video id="videoInput" width="720" height="550" autoplay="false"></video>
   <div id="txt"></div>
   <div id="status"></div>
+  <div class="status">
+    Status : <?php echo $this->absensi_model->status()[$status]; ?>
+  </div>
 
 </body>
 </html>
