@@ -69,7 +69,7 @@ if(!empty($data))
 						
 					<?php
 					$i = 1;
-					$total = ['1'=>0,'2'=>0,'3'=>0,'4'=>0,'5'=>0,'6'=>0];
+					$total = ['0'=>0,'1'=>0,'2'=>0,'3'=>0,'4'=>0,'5'=>0,'6'=>0];
 					foreach ($data as $key => $value) 
 					{
 						?>
@@ -79,6 +79,12 @@ if(!empty($data))
 							<td><?php echo $value['hari'] ?></td>
 							<?php if (!empty($value['status'])): ?>
 								<?php if ($value['status'] == 'on'): ?>
+									<?php if (!empty($value[0])): ?>
+										<?php $total[0]++; ?>
+										<td class="bg-info"><?php echo @$value[0]['jam_jadwal']; ?></td>
+										<td class="bg-info"><?php echo substr($value[0]['visit_time'],11,19); ?></td>
+										<td class="bg-info">Berangkat <?php echo @$value[0]['selisih_waktu']; ?> Menit</td>
+									<?php endif ?>
 									<?php if (!empty($value[1])): ?>
 										<?php $total[1]++; ?>
 										<td class="bg-info"><?php echo $value[1]['jam_jadwal']; ?></td>

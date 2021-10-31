@@ -1,0 +1,1 @@
+ALTER TABLE `absensi` ADD `selisih_waktu` INT(11) NOT NULL AFTER `status`, ADD `jam_jadwal` TIME NOT NULL AFTER `selisih_waktu`;
