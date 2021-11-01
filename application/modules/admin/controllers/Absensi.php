@@ -66,17 +66,27 @@ class Absensi extends CI_Controller
 
       if($cur_time >= $jam['jam_berangkat_awal'] && $cur_time <= $jam['jam_berangkat_akhir']){
         $status = 1;
+        $jam_jadwal = $jam['jam_berangkat_awal'];
       }else if($cur_time > $jam['jam_berangkat_akhir'] && $cur_time < $jam['jam_pulang_awal']){
         $status = 2;
+        $jam_jadwal = $jam['jam_berangkat_awal'];
       }else if($cur_time >= $jam['jam_pulang_awal'] && $cur_time <= $jam['jam_pulang_akhir']){
         $status = 4;
+        $jam_jadwal = $jam['jam_pulang_awal'];
       } else {
         $status = 0;
+        $jam_jadwal = '00:00:00';
       }
+      $waktu      = strtotime($cur_time);
+      $strtime_jadwal = strtotime($jam_jadwal);
+
+      $selisih = $waktu - $strtime_jadwal;
+      $selisih = $selisih / 60;
+      // pr($selisih);
       $karyawan_visit = $this->db->query('SELECT * FROM absensi WHERE karyawan_id = ? AND date(visit_time) = CURDATE() AND status = ?', [$id, $status])->row_array();
       $allowed = false;
       if(empty($karyawan_visit)){
-        $this->db->insert('absensi',['karyawan_id'=>$id, 'status'=>$status,'visit_time'=>date('Y-m-d- H:i:s')]);
+        $this->db->insert('absensi',['karyawan_id'=>$id, 'status'=>$status,'jam_jadwal'=>$jam_jadwal,'selisih_waktu'=>$selisih,'visit_time'=>date('Y-m-d- H:i:s')]);
         $allowed = true;
         $pesan = 'Terima Kasih';
       }else{
