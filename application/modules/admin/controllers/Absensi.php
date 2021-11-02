@@ -133,7 +133,7 @@ class Absensi extends CI_Controller
 			if(empty($_GET['excel'])){
 				$this->load->view('index',['data'=>$data,'karyawan'=>$karyawan,'month'=>$month,'year'=>$year,'instansi'=>$instansi]);
 			}else{
-				$this->load->view('admin/absensi/rekap',['data'=>$data,'karyawan'=>$karyawan,'month'=>$month,'year'=>$year,'instansi'=>$instansi]);
+				$this->load->view('admin/absensi/report',['data'=>$data,'karyawan'=>$karyawan,'month'=>$month,'year'=>$year,'instansi'=>$instansi]);
 			}
 		}
   }
