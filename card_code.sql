@@ -1,0 +1,1 @@
+ALTER TABLE `karyawan` ADD `card_code` INT(11) NOT NULL AFTER `id`;

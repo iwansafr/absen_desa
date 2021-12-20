@@ -146,4 +146,10 @@ class Absensi extends CI_Controller
     $this->esg_model->init();
     $this->load->view('index');
   }
+  public function jam_kerja_custom()
+  {
+    $this->esg_model->init();
+    $days = $this->absensi_model->days();
+    $this->load->view('index',['days'=>$days]);
+  }
 }

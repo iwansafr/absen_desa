@@ -2,6 +2,11 @@
 
 class Absensi_model extends CI_Model{
 
+
+	public function days()
+	{
+		return [1=>'Senin',2=>'Selasa',3=>'Rabu',4=>'Kamis',5=>'Jumat',6=>'Sabtu',7=>'Minggu'];
+	}
   public function status()
   {
     return ['Off','Berangkat Pagi','Terlambat', 'pulang cepat', 'Pulang','izin', 'absen'	];
@@ -85,5 +90,66 @@ class Absensi_model extends CI_Model{
     } else {
       $data = $this->db->get('karyawan')->result_array();
     }
+	}
+	public function flash_absen($id = 0)
+	{
+		$karyawan = $this->db->query('SELECT karyawan.*,jabatan.title AS jabatan FROM karyawan INNER JOIN jabatan ON(jabatan.id=karyawan.jabatan_id) WHERE karyawan.id = ?', $id)->row_array();
+		if(!empty($karyawan))
+		{
+			$day = date('N');
+			$jam = $this->esg->get_config('jam_kerja_'.$day);
+			if(empty($jam)){
+				$jam = $this->esg->get_config('jam_kerja');
+			}
+			$cur_time = date('H:i');
+			$pesan = '';
+			// [0] => Libur
+			// [1] => berangkat
+			// [2] => telat
+			// [3] => pulang cepat
+			// [4] => pulang
+			// [5] => izin
+			// [6] => absen
+
+			if($cur_time >= $jam['jam_berangkat_awal'] && $cur_time <= $jam['jam_berangkat_akhir']){
+				$status = 1;
+				$jam_jadwal = $jam['jam_berangkat_awal'];
+			}else if($cur_time > $jam['jam_berangkat_akhir'] && $cur_time < $jam['jam_pulang_awal']){
+				$status = 2;
+				$jam_jadwal = $jam['jam_berangkat_awal'];
+			}else if($cur_time >= $jam['jam_pulang_awal'] && $cur_time <= $jam['jam_pulang_akhir']){
+				$status = 4;
+				$jam_jadwal = $jam['jam_pulang_awal'];
+			} else {
+				$status = 0;
+				$jam_jadwal = '00:00:00';
+			}
+			$waktu      = strtotime($cur_time);
+			$strtime_jadwal = strtotime($jam_jadwal);
+
+			$selisih = $waktu - $strtime_jadwal;
+			$selisih = $selisih / 60;
+			// pr($selisih);
+			if($status == 2){
+				$karyawan_visit = $this->db->query('SELECT * FROM absensi WHERE karyawan_id = ? AND date(visit_time) = CURDATE() AND status = 1 OR status = ?', [$id, $status])->row_array();
+			}else{
+				$karyawan_visit = $this->db->query('SELECT * FROM absensi WHERE karyawan_id = ? AND date(visit_time) = CURDATE() AND status = ?', [$id, $status])->row_array();
+			}
+			$allowed = false;
+			if(empty($karyawan_visit)){
+				// $this->db->insert('absensi',['karyawan_id'=>$id, 'status'=>$status,'jam_jadwal'=>$jam_jadwal,'selisih_waktu'=>$selisih,'visit_time'=>date('Y-m-d- H:i:s')]);
+				if($status>0){
+					$this->db->insert('absensi',['karyawan_id'=>$id, 'status'=>$status,'jam_jadwal'=>$jam_jadwal,'selisih_waktu'=>$selisih]);
+					$allowed = true;
+					$pesan = ['msg' => '<b>'.$karyawan['nama'].'</b> Berhasil Melakukan Absen '.$this->absensi_model->status()[$status],'pesan'=>$karyawan['nama'].' berhasil melakukan absen '.$this->absensi_model->status()[$status], 'status'=>'success'];
+				}else{
+					$pesan = ['msg' => '<b>'.$karyawan['nama'].'</b> tidak bisa absen karena sistem sedang off','pesan'=>'maaf absen sedang off', 'status'=>'warning'];
+				}
+			}else{
+				$allowed = true;
+				$pesan = ['msg' => '<b>'.$karyawan['nama'].'</b> Sudah Melakukan Absen '.$this->absensi_model->status()[$status], 'status'=>'success', 'pesan'=>$karyawan['nama'].' sudah melakukan absen '.$this->absensi_model->status()[$status]];
+			}
+			return $pesan;
+		}
 	}
 }

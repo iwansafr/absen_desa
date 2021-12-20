@@ -2378,10 +2378,10 @@ class Zea
 												$this->CI->load->library('image_lib');
 
 												$this->CI->image_lib->initialize($config_image_lib);
-												// if($this->CI->image_lib->resize())
-												// {
+												if($this->CI->image_lib->resize())
+												{
 
-												// }
+												}
 												if($this->init == 'edit')
 												{
 													$update_file = array($u_value => $file_name);

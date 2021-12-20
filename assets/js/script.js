@@ -55,7 +55,7 @@ async function recognizeFaces() {
 
     const labeledDescriptors = await loadLabeledImages()
     // console.log(labeledDescriptors)
-    const faceMatcher = new faceapi.FaceMatcher(labeledDescriptors, 0.4)
+    const faceMatcher = new faceapi.FaceMatcher(labeledDescriptors, 0.5)
     // console.log(faceMatcher)
 
     video.play()
@@ -82,13 +82,13 @@ async function recognizeFaces() {
             const box = resizedDetections[i].detection.box
             let person = result.toString()
             if (person.match('unknown')) {
-                person = 'Bukan karyawan'
+                person = 'Bukan Perangkat Desa'
             }else{
                 const get_text = person
                 const regex = new RegExp(/(\d+)(?=\s*-)/);
                 const anggota_id = regex.exec(get_text)
                 console.log('redirect '+i)
-                // window.location.href = _URL+'admin/absensi/save/'+anggota_id[0];
+                window.location.href = _URL+'admin/absensi/save/'+anggota_id[0];
                 return false;
                 // setInterval(async () => {
                 // }, 500)

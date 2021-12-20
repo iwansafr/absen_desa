@@ -26,8 +26,8 @@ $form->addInput('nama', 'text');
 $form->addInput('jabatan_id', 'dropdown');
 $form->setLabel('jabatan_id','jabatan');
 $form->tableOptions('jabatan_id', 'jabatan','id','title');
-$form->addInput('kelas', 'text');
-$form->setLabel('kelas', 'Kelas (kosongi jika bukan siswa)');
+// $form->addInput('kelas', 'text');
+// $form->setLabel('kelas', 'Kelas (kosongi jika bukan siswa)');
 $form->addInput('jk', 'dropdown');
 $form->setOptions('jk', ['L' => 'Laki-laki', 'P' => 'Perempuan']);
 $form->setLabel('jk', 'Jenis Kelamin');
@@ -35,5 +35,14 @@ $form->addInput('hp', 'text');
 $form->addInput('alamat', 'textarea');
 $form->addInput('photo', 'file');
 $form->setAccept('photo', '.jpg,.jpeg,.png');
+$card_code_exist = $this->db->field_exists('card_code','karyawan');
+if($card_code_exist){
+	$form->addINput('card_code','text');
+	$form->setType('card_code','number');
+	$form->setLabel('card_code','Card Code');
+	$form->setAttribute('card_code',['placeholder'=>'Tap Kartu pada Card reader']);
+	$form->setHelp('card_code','Tap Kartu pada Card reader');
+	$form->setUnique(['card_code']);
+}
 
 $form->form();

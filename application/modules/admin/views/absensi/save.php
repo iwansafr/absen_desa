@@ -35,10 +35,6 @@
 				<td>: <?= $data['nama'] ?></td>
 			</tr>
 			<tr>
-				<td>Kelas</td>
-				<td>: <?= $data['kelas'] ?></td>
-			</tr>
-			<tr>
 				<td>Jabatan</td>
 				<td>: <?= $data['jabatan'] ?> </td>
 			</tr>
