@@ -131,7 +131,7 @@ class Absensi_model extends CI_Model{
 			$selisih = $selisih / 60;
 			// pr($selisih);
 			if($status == 2){
-				$karyawan_visit = $this->db->query('SELECT * FROM absensi WHERE karyawan_id = ? AND date(visit_time) = CURDATE() AND status = 1 OR status = ?', [$id, $status])->row_array();
+				$karyawan_visit = $this->db->query('SELECT * FROM absensi WHERE karyawan_id = ? AND date(visit_time) = CURDATE() AND (status = 1 OR status = ?)', [$id, $status])->row_array();
 			}else{
 				$karyawan_visit = $this->db->query('SELECT * FROM absensi WHERE karyawan_id = ? AND date(visit_time) = CURDATE() AND status = ?', [$id, $status])->row_array();
 			}
